@@ -19,8 +19,6 @@ func Detect() {
 		return
 	}
 
-	fmt.Printf("Snapshot detected with commit ID: %s\n", snapshot)
-
 	currentSnapshot, err := utils.BuildCurrentSnapshot(".")
 	if err != nil {
 		fmt.Println("Error building current snapshot:", err)
@@ -33,4 +31,15 @@ func Detect() {
 	fmt.Printf("Modified files: %v\n", modified)
 	fmt.Printf("Deleted files: %v\n", deleted)
 
+	//build index entries
+	indexEntries := utils.BuildIndexEntries(added, modified, deleted, currentSnapshot)
+
+	//write index entries to index file
+	err = utils.WriteIndex(indexEntries)
+	if err != nil {
+		fmt.Println("Error writing index:", err)
+		return
+	}
+
+	fmt.Println("Changes has added to stage area successfully and index file has updated")
 }
